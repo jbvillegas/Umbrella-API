@@ -3,6 +3,7 @@ const {
   fetch7DayForecast, 
   fetchWeatherAlerts 
 } = require('../services/weather-Service');
+const { getUserUsageStats } = require('../utils/logging');
 
 // Determine subscription tier based on API key
 function getTierForApiKey(apiKey) {
@@ -24,7 +25,7 @@ async function getWeatherByCity(req, res, next) {
   }
 
   try {
-    const tier = getTierForApiKey(req.apiKey);
+    const tier = req.userTier;
     const weatherData = await fetchCurrentWeather(city, tier);
     
     res.json({

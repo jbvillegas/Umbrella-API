@@ -1,0 +1,138 @@
+// Umbrella Weather API Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User accounts
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String   // bcrypt hashed
+  tier        Tier     @default(FREE)
+  stripeCustomerId String? @unique
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  apiKeys     ApiKey[]
+  subscriptions Subscription[]
+  usageRecords UsageRecord[]
+  
+  @@map("users")
+}
+
+// API Keys for authentication
+model ApiKey {
+  id          String   @id @default(cuid())
+  key         String   @unique // The actual API key
+  name        String   // User-defined name for the key
+  userId      String
+  isActive    Boolean  @default(true)
+  lastUsedAt  DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usageRecords UsageRecord[]
+  
+  @@map("api_keys")
+}
+
+// Subscription management
+model Subscription {
+  id              String   @id @default(cuid())
+  userId          String
+  tier            Tier
+  status          SubscriptionStatus @default(ACTIVE)
+  stripeSubscriptionId String? @unique
+  stripePriceId   String?
+  
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscriptions")
+}
+
+// API Usage tracking
+model UsageRecord {
+  id          String   @id @default(cuid())
+  userId      String
+  apiKeyId    String
+  endpoint    String   // e.g., "/api/weather/current"
+  method      String   // e.g., "GET"
+  statusCode  Int      // HTTP status code
+  responseTime Int     // Response time in milliseconds
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKey      ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  
+  @@map("usage_records")
+  @@index([userId, createdAt])
+  @@index([apiKeyId, createdAt])
+}
+
+// Rate limiting tracking
+model RateLimit {
+  id          String   @id @default(cuid())
+  identifier  String   // API key or IP address
+  endpoint    String   // Endpoint being limited
+  count       Int      @default(1)
+  windowStart DateTime
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([identifier, endpoint, windowStart])
+  @@map("rate_limits")
+}
+
+// Webhook events (for Stripe)
+model WebhookEvent {
+  id              String   @id @default(cuid())
+  stripeEventId   String   @unique
+  eventType       String   // e.g., "customer.subscription.created"
+  processed       Boolean  @default(false)
+  data            Json     // Store the full webhook data
+  
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+  
+  @@map("webhook_events")
+}
+
+// Enums
+enum Tier {
+  FREE
+  PREMIUM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
+  TRIALING
+}

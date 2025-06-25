@@ -10,11 +10,19 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
-  "keywords": ["weather", "api", "premium", "subscription", "meteorology"],
+  "keywords": [
+    "weather",
+    "api",
+    "premium",
+    "subscription",
+    "meteorology"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.10.1",
     "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -23,6 +31,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
+    "prisma": "^6.10.1",
     "stripe": "^18.2.1",
     "uuid": "^10.0.0"
   },
