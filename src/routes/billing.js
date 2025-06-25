@@ -3,7 +3,7 @@ const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { authenticateJWT } = require('../middlewares/auth');
 
-// Get available subscription plans
+// SUBSCRIPTION PLANS ENDPOINT
 router.get('/plans', (req, res) => {
   const plans = [
     {
@@ -55,7 +55,7 @@ router.get('/plans', (req, res) => {
   res.json({ plans });
 });
 
-// Create Stripe checkout session
+// STRIPE CHECKOUT SESSION ENDPOINT
 router.post('/create-checkout-session', authenticateJWT, async (req, res) => {
   try {
     const { planId, successUrl, cancelUrl } = req.body;
@@ -94,7 +94,7 @@ router.post('/create-checkout-session', authenticateJWT, async (req, res) => {
   }
 });
 
-// Webhook to handle Stripe events
+// WEBHOOK
 router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -106,16 +106,16 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event
+  // EVENT HANDLING
   switch (event.type) {
     case 'checkout.session.completed':
       const session = event.data.object;
-      // Handle successful subscription
+      
       console.log('Subscription successful:', session.metadata);
-      // Update user's subscription in database
+      // UPDATE DATABASE
       break;
     case 'customer.subscription.deleted':
-      // Handle subscription cancellation
+      // CANCELL SUBSCRIPTION
       console.log('Subscription cancelled');
       break;
     default:
@@ -125,9 +125,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   res.json({ received: true });
 });
 
-// Get user's current subscription status
+// STATUS
 router.get('/subscription', authenticateJWT, async (req, res) => {
-  // In production, fetch from database
+  // FETCH FROM DATABASE
   const mockSubscription = {
     user_id: req.user.id,
     plan: 'free',

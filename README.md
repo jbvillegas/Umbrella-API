@@ -232,9 +232,6 @@ CMD ["npm", "start"]
 4. Push to the branch
 5. Create a Pull Request
 
-## 📄 License
-
-MIT License - see LICENSE file for details.
 
 ## 🆘 Support
 
@@ -242,13 +239,3 @@ MIT License - see LICENSE file for details.
 - **Premium:** Email support within 24 hours
 - **Enterprise:** Priority support within 4 hours
 
-## 🔗 Links
-
-- [Dashboard](https://dashboard.umbrella-weather.com)
-- [API Documentation](https://api.umbrella-weather.com/api/docs)
-- [Status Page](https://status.umbrella-weather.com)
-- [Pricing](https://umbrella-weather.com/pricing)
-
----
-
-Built with ❤️ for developers who need reliable weather data.

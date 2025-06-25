@@ -4,7 +4,7 @@ const {
   fetchWeatherAlerts 
 } = require('../services/weather-Service');
 
-// Helper function to determine tier from API key
+// Determine subscription tier based on API key
 function getTierForApiKey(apiKey) {
   const premiumKeys = process.env.PREMIUM_API_KEYS ? process.env.PREMIUM_API_KEYS.split(',') : [];
   const enterpriseKeys = process.env.ENTERPRISE_API_KEYS ? process.env.ENTERPRISE_API_KEYS.split(',') : [];
@@ -69,7 +69,7 @@ async function getWeatherForecast(req, res, next) {
 
   try {
     const forecastData = await fetch7DayForecast(city);
-    const limitedForecast = forecastData.slice(0, days * 8); // 8 forecasts per day
+    const limitedForecast = forecastData.slice(0, days * 8); // forecast limited to requested days (8 data points per day)
     
     res.json({
       data: {
@@ -110,7 +110,7 @@ async function getWeatherAlerts(req, res, next) {
 async function getApiUsage(req, res, next) {
   const tier = getTierForApiKey(req.apiKey);
   
-  // In production, this would fetch real usage data from database
+  //MOCK USAGE DATA
   const mockUsage = {
     current_period: {
       requests_made: Math.floor(Math.random() * 1000),

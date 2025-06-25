@@ -1,13 +1,12 @@
 const { v4: uuidv4 } = require('uuid');
 
-// Add unique request ID to each request
+// UNIQUE ID TO EACH REQUEST
 const addRequestId = (req, res, next) => {
   req.id = uuidv4();
   res.setHeader('X-Request-ID', req.id);
   next();
 };
 
-// Enhanced logging utility
 const logger = {
   info: (message, meta = {}) => {
     console.log(JSON.stringify({
@@ -42,7 +41,7 @@ const logger = {
   }
 };
 
-// Request logging middleware
+// MIDDLEWARE TO LOG REQUESTS
 const requestLogger = (req, res, next) => {
   const start = Date.now();
   
@@ -69,9 +68,9 @@ const requestLogger = (req, res, next) => {
   next();
 };
 
-// API metrics tracking
+// API METRICS TRACKING
 const trackApiUsage = (req, res, next) => {
-  // In production, this would update database with usage metrics
+  
   const usage = {
     apiKey: req.apiKey,
     endpoint: req.path,
@@ -81,7 +80,7 @@ const trackApiUsage = (req, res, next) => {
     userAgent: req.get('User-Agent')
   };
   
-  // Store usage data (implement with database)
+  
   logger.info('API usage tracked', { usage });
   
   next();

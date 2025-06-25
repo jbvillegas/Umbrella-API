@@ -1,11 +1,10 @@
-// filepath: /Users/villegasjb/Documents/_API/Umbrella-API/src/services/weather-Service.js
+
 const axios = require('axios');
 const NodeCache = require('node-cache');
 
 const BASE = 'https://api.openweathermap.org/data/2.5';
 const KEY = process.env.OPENWEATHER_KEY;
 
-// Cache for 5 minutes to reduce API calls
 const cache = new NodeCache({ stdTTL: 300 });
 
 async function fetchCurrentWeather(city, tier = 'free') {
@@ -53,7 +52,7 @@ async function fetchCurrentWeather(city, tier = 'free') {
     };
   }
 
-  // Enterprise features
+  // ENTERPRISE
   if (tier === 'enterprise') {
     result.enterprise = {
       forecast_7day: await fetch7DayForecast(city),
@@ -68,7 +67,7 @@ async function fetchCurrentWeather(city, tier = 'free') {
 async function fetch7DayForecast(city) {
   try {
     const resp = await axios.get(`${BASE}/forecast`, {
-      params: { q: city, appid: KEY, units: 'metric', cnt: 56 } // 7 days * 8 forecasts per day
+      params: { q: city, appid: KEY, units: 'metric', cnt: 56 } 
     });
     
     return resp.data.list.map(item => ({
@@ -109,7 +108,7 @@ async function fetchAirQuality(lat, lon) {
 }
 
 async function fetchHistoricalData(lat, lon) {
-  // Placeholder for historical data - requires paid OpenWeather plan
+  //OPENWEATHER PLAN
   return {
     message: "Historical data requires OpenWeather paid plan",
     available: false
@@ -126,7 +125,7 @@ async function fetchWeatherAlerts(city, tier = 'free') {
       params: { q: city, appid: KEY }
     });
     
-    // This would integrate with a weather alerts service
+    // WEATHER ALERT SERVICE
     return {
       alerts: [],
       message: 'No active weather alerts'

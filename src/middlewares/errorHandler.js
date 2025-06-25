@@ -1,8 +1,8 @@
-// Global error handling middleware
+// GLOBAL ERROR HANDLER MIDDLEWARE
 const errorHandler = (err, req, res, next) => {
   console.error('Error:', err);
 
-  // OpenWeather API errors
+  // OPENWEATHERMAP API ERRORS
   if (err.response && err.response.status) {
     const status = err.response.status;
     const message = err.response.data?.message || 'External API error';
@@ -37,7 +37,7 @@ const errorHandler = (err, req, res, next) => {
     }
   }
 
-  // JWT errors
+  // JWT ERRORS
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       error: 'Invalid Token',
@@ -52,7 +52,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Validation errors
+  // VALIDATION ERRORS
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       error: 'Validation Error',
@@ -61,7 +61,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Rate limiting errors
+  // RATE LIMIT ERRORS
   if (err.status === 429) {
     return res.status(429).json({
       error: 'Rate Limit Exceeded',
@@ -70,7 +70,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Default server error
+  // DEFAULT SERVER ERROR
   res.status(500).json({
     error: 'Internal Server Error',
     message: 'An unexpected error occurred',
@@ -79,7 +79,7 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-// 404 handler
+// 404 
 const notFoundHandler = (req, res) => {
   res.status(404).json({
     error: 'Endpoint Not Found',

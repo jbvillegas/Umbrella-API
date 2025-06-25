@@ -8,23 +8,22 @@ const {
   getApiUsage 
 } = require('../controllers/weather-Controller');
 
-// Apply authentication and rate limiting to all weather routes
+// AUTHENTICATION AND RATE LIMITING MIDDLEWARE
 router.use(authenticateApiKey);
 router.use(applyRateLimit);
 
-// Current weather (available to all tiers)
+// CURRRENT WEATHER DATA
 router.get('/current', getWeatherByCity);
 
-// Weather forecast (premium and enterprise only)
+// CURRENT WEATHER BY CITY
 router.get('/forecast', getWeatherForecast);
 
-// Weather alerts (premium and enterprise only)
+// ALERTS FOR WEATHER CONDITIONS
 router.get('/alerts', getWeatherAlerts);
 
-// API usage statistics
+// API STATS
 router.get('/usage', getApiUsage);
 
-// Legacy endpoint for backward compatibility
 router.get('/', getWeatherByCity);
 
 module.exports = router; 

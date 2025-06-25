@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// API Key authentication middleware
+// API KEY AUTHENTICATION MIDDLEWARE
 const authenticateApiKey = (req, res, next) => {
   const apiKey = req.headers['x-api-key'] || req.query.api_key;
   
@@ -11,8 +11,7 @@ const authenticateApiKey = (req, res, next) => {
     });
   }
 
-  // In production, validate against database
-  // For demo, check against environment variable
+  //THIS NEEDS VALIDATION AGAINST A DATABASE OR ENVIRONMENT VARIABLE
   const validApiKeys = process.env.VALID_API_KEYS ? process.env.VALID_API_KEYS.split(',') : [];
   
   if (!validApiKeys.includes(apiKey)) {
@@ -22,7 +21,7 @@ const authenticateApiKey = (req, res, next) => {
     });
   }
 
-  // Store API key info for rate limiting
+  // RATE LIMITING LOGIC: 
   req.apiKey = apiKey;
   next();
 };

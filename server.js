@@ -4,27 +4,27 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-// Route imports
+// ROUTES
 const weatherRouter = require('./src/routes/weather');
 const billingRouter = require('./src/routes/billing');
 
-// Middleware imports
+// MIDDLEWARES
 const { errorHandler, notFoundHandler } = require('./src/middlewares/errorHandler');
 const { addRequestId, requestLogger, trackApiUsage } = require('./src/utils/logging');
 
 const app = express();
 
-// Trust proxy (important for rate limiting and IP detection)
+// PROXY
 app.set('trust proxy', 1);
 
-// Core middleware
+// CORE MIDDLEWARES
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(addRequestId);
 app.use(requestLogger);
 
-// Public endpoints (no authentication required)
+// ENDPOINTS
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to Umbrella Weather API',
@@ -47,11 +47,9 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-// API routes
 app.use('/api/weather', trackApiUsage, weatherRouter);
 app.use('/api/billing', billingRouter);
 
-// Documentation endpoint
 app.get('/api/docs', (req, res) => {
   res.json({
     title: 'Umbrella Weather API Documentation',
@@ -99,7 +97,6 @@ app.get('/api/docs', (req, res) => {
   });
 });
 
-// Error handling
 app.use(notFoundHandler);
 app.use(errorHandler);
 

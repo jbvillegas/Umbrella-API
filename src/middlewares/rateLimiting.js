@@ -1,6 +1,6 @@
 const rateLimit = require('express-rate-limit');
 
-// Rate limiting configuration for different tiers
+// TIER DEPENDENT RATE LIMITING
 const createRateLimiter = (windowMs, max, message) => {
   return rateLimit({
     windowMs,
@@ -18,28 +18,27 @@ const createRateLimiter = (windowMs, max, message) => {
   });
 };
 
-// Different rate limits for different subscription tiers
 const freeTierLimit = createRateLimiter(
-  15 * 60 * 1000, // 15 minutes
-  100, // 100 requests per 15 minutes
+  15 * 60 * 1000, //15 MINUTES
+  100, // 100 REQUESTS
   'Free tier limit: 100 requests per 15 minutes. Upgrade to premium for higher limits.'
 );
 
 const premiumTierLimit = createRateLimiter(
-  15 * 60 * 1000, // 15 minutes
-  1000, // 1000 requests per 15 minutes
+  15 * 60 * 1000, // 15 MINUTES
+  1000, // 1000 REQUESTS
   'Premium tier limit: 1000 requests per 15 minutes.'
 );
 
 const enterpriseTierLimit = createRateLimiter(
-  15 * 60 * 1000, // 15 minutes
-  10000, // 10000 requests per 15 minutes
+  15 * 60 * 1000, // 15 MINUTES
+  10000, // 10000 REQUESTS
   'Enterprise tier limit: 10000 requests per 15 minutes.'
 );
 
-// Middleware to apply appropriate rate limit based on API key tier
+// MIDDLEWARE
 const applyRateLimit = (req, res, next) => {
-  // In production, determine tier from database lookup
+  // IN REALITY THIS LOOKS UP TO THE DATABASE OR ENVIRONMENT VARIABLE
   const apiKeyTier = getTierForApiKey(req.apiKey);
   
   switch (apiKeyTier) {
@@ -52,9 +51,9 @@ const applyRateLimit = (req, res, next) => {
   }
 };
 
-// Helper function to determine tier (implement with database lookup)
+// DATABASE LOOKUP FUNCTION
 function getTierForApiKey(apiKey) {
-  // Temporary implementation - in production, look up in database
+  
   const premiumKeys = process.env.PREMIUM_API_KEYS ? process.env.PREMIUM_API_KEYS.split(',') : [];
   const enterpriseKeys = process.env.ENTERPRISE_API_KEYS ? process.env.ENTERPRISE_API_KEYS.split(',') : [];
   
