@@ -1,4 +1,4 @@
-const {fetchCurrentWeather} = require('../services/weatherService');
+const {fetchCurrentWeather} = require('../services/weather-Service');
 
 async function getWeatherByCity (req, res, next) {
     const city = req.query.city;
@@ -7,7 +7,7 @@ async function getWeatherByCity (req, res, next) {
     }
     try {
         const weatherData = await fetchCurrentWeather(city);
-        res.json(data);
+        res.json(weatherData);
     } catch (error) {
         next(error);    
     }
